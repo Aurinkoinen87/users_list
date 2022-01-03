@@ -12,40 +12,38 @@ export type UserType = {
 
 function App() {
 
-  console.log('component rendered')
-  const users: UserType[] = [{ name: 'Snezhana', surname: 'Denisova', id: 0 }, { name: 'Olga', surname: 'Astaxova', id: 1 }, { name: 'Alina', surname: 'Armas', id: 2 }, { name: 'Nadezda', surname: 'Kamennaya', id: 3 }, { name: 'Katerina', surname: 'Alabai', id: 4 }, { name: 'Jane', surname: 'Winslet', id: 5 }, { name: 'Regina', surname: 'Minecraft', id: 6 }, { name: 'Arxiz', surname: 'Tulupova', id: 7 }]
+  const initialUsers: UserType[] = [{ name: 'Snezhana', surname: 'Denisova', id: 0 }, { name: 'Olga', surname: 'Astaxova', id: 1 }, { name: 'Alina', surname: 'Armas', id: 2 }, { name: 'Nadezda', surname: 'Kamennaya', id: 3 }, { name: 'Katerina', surname: 'Alabai', id: 4 }, { name: 'Jane', surname: 'Winslet', id: 5 }, { name: 'Regina', surname: 'Minecraft', id: 6 }, { name: 'Arxiz', surname: 'Tulupova', id: 7 }]
 
 
-  let [names, setName] = useState<UserType[]>([])
+  let userIdArr = initialUsers.map(u => u.id)
+  let [usersId, setUser] = useState<number[]>([])
 
-  const addName = (id: number) => {
-    let user = users.filter(u => u.id === id)
-    names = [...names, ...user]
-    setName(names)
+  const addDeleteUser = (id: number) => {
+      let i = usersId.find(i => i == id)
+      if(i){
+
+        setUser(usersId.filter(a => a !== id))
+      } else {
+        setUser([...usersId, id])
+      }
     }
 
-  const deleteUser = (id: number) => {
-    names = names.filter(u => u.id !== id)
-    setName([...names])
-  }
 
 
-  let usersToShow = names.map((n) => n.name).join(', ')
+  let usersToShow = initialUsers.filter((n) => usersId.some(i => i === n.id)).map(u => u.name).join(', ')
 
-
-
-  let[isAllChecked, setAllChecked] = useState(false)
-
-  const onChangeAll = (e: ChangeEvent<HTMLInputElement>) => setAllChecked(e.currentTarget.checked)
+  const onChangeAll = () => {
+    if(usersId.length < userIdArr.length){
+    setUser([...userIdArr])
+    } else {setUser([])}}
 
 
 
   return (
     <div className="App">
-      <input type="checkbox" onChange={(e)=> onChangeAll(e)} checked={isAllChecked} />
+      <input type="checkbox" onChange={(e)=> onChangeAll()} checked={usersId.length === userIdArr.length} />
       <div className='user_table'>
-        {users.map(u => <User key={u.id} user={u} addName={addName} deleteUser={deleteUser} isAllChecked={isAllChecked} />)}
-      </div>
+        {initialUsers.map(u => <User key={u.id} user={u} usersId={usersId} addDeleteUser={addDeleteUser} />)} </div>
       list:  <span className='list'>{usersToShow} </span>
 
     </div>

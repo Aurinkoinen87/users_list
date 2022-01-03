@@ -6,30 +6,22 @@ import cn from 'classnames'
 
 type PropsType = {
     user: UserType
-    isAllChecked: boolean
-    addName: (id: number) => void
-    deleteUser: (id: number) => void
+    usersId: number[]
+    addDeleteUser: (id: number) => void
 }
 
 export const User = React.memo((props: PropsType) => {
-    console.log('component rendered')
 
-    useEffect(()=> {handleChecked(props.isAllChecked)},[props.isAllChecked])
+    let check = props.usersId.includes(props.user.id)
 
-    let[isChecked, setChecked] = useState(false)
-
-    const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => handleChecked(e.currentTarget.checked)
-
-    const handleChecked = (checked: boolean) => {
-        setChecked(checked)
-        if(checked){props.addName(props.user.id)
-        } else {
-        props.deleteUser(props.user.id)}}
+    const onChangeHandler = () => props.addDeleteUser(props.user.id)
 
 
-    return(
+
+
+    return (
         <div>
-        <label><div className={cn(style.user, {[style.user_bg_color]: isChecked})}>{props.user.name + ' ' + props.user.surname}<input type="checkbox" onChange={(e)=> onChangeHandler(e)} checked={isChecked}/></div></label>
+            <label><div className={cn(style.user, { [style.user_bg_color]: check })}>{props.user.name + ' ' + props.user.surname}<input type="checkbox" onChange={(e) => onChangeHandler()} checked={check} /></div></label>
         </div>
     )
 })
